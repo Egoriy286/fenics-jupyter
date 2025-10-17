@@ -31,16 +31,16 @@ jobs:
           key: ${{ env.SERVER_SSH_KEY }}
           port: 22
           source: "."
-          target: "~/fenics-legacy_jupyter/"
+          target: "~/fenics-legacy/"
 
       - name: Build and deploy Docker container on server
         run: |
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST << EOF
-            sudo cd ~/fenics-legacy_jupyter
-            sudo docker build -t fenics-legacy_jupyter .
-            if sudo docker ps -a --format '{{.Names}}' | grep -Eq '^fenics-legacy_jupyter-container$'; then
-              sudo docker stop fenics-legacy_jupyter-container
-              sudo docker rm fenics-legacy_jupyter-container
+            cd ~/fenics-legacy
+            sudo docker build -t fenics-legacy .
+            if sudo docker ps -a --format '{{.Names}}' | grep -Eq '^fenics-legacy-container$'; then
+              sudo docker stop fenics-legacy-container
+              sudo docker rm fenics-legacy-container
             fi
-            sudo docker run -d --name fenics-legacy_jupyter-container -p 8887:8887 fenics-legacy_jupyter
+            sudo docker run -d --name fenics-legacy-container -p 8887:8887 fenics-legacy
           EOF
