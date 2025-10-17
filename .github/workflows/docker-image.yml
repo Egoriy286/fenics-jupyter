@@ -1,0 +1,46 @@
+name: Deploy Fenics-legacy-jupyter
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    env:
+      SERVER_HOST: ${{ secrets.SERVER_HOST }}
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+      SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ env.SERVER_SSH_KEY }}
+
+      - name: Copy source code to server
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ env.SERVER_HOST }}
+          username: ${{ env.SERVER_USER }}
+          key: ${{ env.SERVER_SSH_KEY }}
+          port: 22
+          source: "."
+          target: "~/fenics-legacy_jupyter/"
+
+      - name: Build and deploy Docker container on server
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_HOST << EOF
+            cd ~/fenics-legacy_jupyter
+            docker build -t fenics-legacy_jupyter .
+            if docker ps -a --format '{{.Names}}' | grep -Eq '^fenics-legacy_jupyter-container$'; then
+              docker stop fenics-legacy_jupyter-container
+              docker rm fenics-legacy_jupyter-container
+            fi
+            docker run -d --name fenics-legacy_jupyter-container -p 8887:8887 fenics-legacy_jupyter
+          EOF
