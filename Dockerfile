@@ -28,7 +28,7 @@ WORKDIR /workspace
 RUN chmod -R 777 /workspace
 
 # Открываем порт для Jupyter Lab
-EXPOSE 8887
+EXPOSE 8888
 
 # Запуск Jupyter Lab
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8887", "--allow-root", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--NotebookApp.token='student123'", "--NotebookApp.password='student123'"]

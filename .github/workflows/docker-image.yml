@@ -42,5 +42,5 @@ jobs:
               sudo docker stop fenics-legacy-container
               sudo docker rm fenics-legacy-container
             fi
-            sudo docker run -d --name fenics-legacy-container -p 8887:8887 fenics-legacy
+            sudo docker run -d --name fenics-legacy-container -p 8887:8888 fenics-legacy
           EOF
