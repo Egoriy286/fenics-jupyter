@@ -1,5 +1,5 @@
 # Dockerfile с Python 3.10, DOLFIN и DOLFINx без conda
-FROM fenics/stable:latest
+FROM quay.io/fenicsproject/stable:current
 
 USER root
 
