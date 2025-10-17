@@ -7,7 +7,10 @@ USER root
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Berlin
 
-# Обновляем pip и устанавливаем Jupyter Lab и дополнительные библиотеки
+# Install build dependencies required by cffi
+RUN apt-get update && apt-get install -y build-essential libffi-dev python3-dev
+
+# Upgrade pip and install Jupyter Lab and additional libraries
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install --no-cache-dir \
     jupyterlab \
